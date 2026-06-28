@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Personal Assistant</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="background-blur blur1"></div>
+<div class="background-blur blur2"></div>
+
+<div class="wrapper">
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <div class="hero-icon">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+
+        <h1>
+            AI Personal
+            <span>Assistant</span>
+        </h1>
+
+        <p>
+              Ask Questions • Summarize Emails • Improve Productivity
+        </p>
+
+        <div class="hero-badges">
+
+            <div class="badge">
+                <i class="fa-solid fa-bolt"></i>
+                Fast
+            </div>
+
+            <div class="badge">
+                <i class="fa-solid fa-brain"></i>
+                Smart
+            </div>
+
+            <div class="badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                Secure
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- MAIN GRID -->
+    <div class="grid">
+
+        <!-- LEFT CARD -->
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="icon-box">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+
+                <div>
+
+                    <h2>Ask AI</h2>
+
+                    <p>
+                        Ask anything and receive intelligent responses instantly.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <form id="askForm">
+
+                <input
+                        type="text"
+                        name="question"
+                        placeholder="Ask anything..."
+                        required>
+
+                <button type="submit">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Ask AI
+
+                </button>
+
+            </form>
+
+            <div id="ans-loading" class="loading-box" style="display:none;">
+
+                <div class="loader"></div>
+
+                Model is thinking...
+
+            </div>
+
+            <div class="result-box">
+
+                <div class="result-title">
+
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                    AI Response
+
+                </div>
+
+                <p id="answer">
+                    Your answer will appear here...
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT CARD -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="icon-box green">
+
+                    <i class="fa-solid fa-envelope-open-text"></i>
+
+                </div>
+
+                <div>
+
+                    <h2>Email Summarizer</h2>
+
+                    <p>
+
+                        Convert lengthy emails into concise summaries with key action items.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <form id="emailForm">
+
+                <textarea
+
+                        name="email"
+
+                        placeholder="Paste your email here..."
+
+                        required></textarea>
+
+                <button type="submit">
+
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                    Generate Summary
+
+                </button>
+
+            </form>
+
+            <div id="summary-loading"
+
+                 class="loading-box"
+
+                 style="display:none;">
+
+                <div class="loader"></div>
+
+                Model is generating summary...
+
+            </div>
+
+            <div class="result-box">
+
+                <div class="result-title">
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                    Summary
+
+                </div>
+
+                <p id="summary">
+
+                    Your summary will appear here...
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FEATURES -->
+
+    <section class="features">
+
+        <div class="feature">
+
+            <i class="fa-solid fa-bolt"></i>
+
+            <h3>Fast Responses</h3>
+
+            <p>
+                Powered by Google's Gemini model for lightning-fast AI responses.
+            </p>
+
+        </div>
+
+        <div class="feature">
+
+            <i class="fa-solid fa-brain"></i>
+
+            <h3>AI Powered</h3>
+
+            <p>
+                Advanced language understanding for accurate and helpful answers.
+            </p>
+
+        </div>
+
+        <div class="feature">
+
+            <i class="fa-solid fa-envelope"></i>
+
+            <h3>Email Intelligence</h3>
+
+            <p>
+                Extract important information from long emails in seconds.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+
+           Built using Google Gemini API
+
+        </p>
+
+        <small>
+
+            © 2026 AI Personal Assistant
+
+        </small>
+
+    </footer>
+
+</div>
+
+<script>
+
+document.getElementById("askForm").onsubmit = async (e) => {
+
+    e.preventDefault();
+
+    let formData = new FormData(e.target);
+
+    let loading = document.getElementById("ans-loading");
+
+    loading.style.display = "flex";
+
+    let res = await fetch("/ask", {
+
+        method: "POST",
+
+        body: formData
+
+    });
+
+    let data = await res.json();
+
+    document.getElementById("answer").innerText = data.response;
+
+    loading.style.display = "none";
+
+};
+
+document.getElementById("emailForm").onsubmit = async (e) => {
+
+    e.preventDefault();
+
+    let formData = new FormData(e.target);
+
+    let loading = document.getElementById("summary-loading");
+
+    loading.style.display = "flex";
+
+    let res = await fetch("/summarize", {
+
+        method: "POST",
+
+        body: formData
+
+    });
+
+    let data = await res.json();
+
+    document.getElementById("summary").innerText = data.response;
+
+    loading.style.display = "none";
+
+};
+
+</script>
+
+</body>
+</html>
